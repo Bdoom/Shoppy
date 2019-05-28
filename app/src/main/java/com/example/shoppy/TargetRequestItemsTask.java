@@ -9,14 +9,20 @@ import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
+
+    StringBuilder sb = null;
 
     @Override
     protected String doInBackground(String... data) {
-        String apiURL = "https://redsky.target.com/v2/plp/search/?count=1&offset=0&keyword=" + data[0] + "&store_ids=" + data[1] + "&pricing_store_id=" + data[1] + "&key=eb2551e4accc14f38cc42d32fbc2b2ea";
+        String apiURL = "https://redsky.target.com/v2/plp/search/?count=1&offset=0&keyword=" + data[0].trim() + "&store_ids=" + data[1].trim() + "&pricing_store_id=" + data[1].trim() + "&key=eb2551e4accc14f38cc42d32fbc2b2ea";
 
         HttpURLConnection urlConnection = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
 
         try
         {
@@ -33,6 +39,7 @@ public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
             }
 
             System.out.println(sb);
+            System.out.println(apiURL);
 
         } catch (IOException ex)
         {
@@ -53,7 +60,31 @@ public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        //Do anything with response..
+
+
+        try
+        {
+            JSONObject jsonObject = new JSONObject(sb.toString());
+
+            JSONObject search_response = jsonObject.getJSONObject("search_response");
+            JSONObject items = search_response.getJSONObject("items");
+            JSONArray item = items.getJSONArray("Item");
+            for (int i = 0; i < item.length(); i++)
+            {
+                JSONObject jsonItem = item.getJSONObject(i);
+                String title = jsonItem.getString("title");
+                JSONObject jsonPrice = jsonItem.getJSONObject("price");
+                double price = jsonPrice.getDouble("current_retail");
+
+            }
+
+        }
+        catch (JSONException ex)
+        {
+            ex.printStackTrace();
+        }
+
+
     }
 
 

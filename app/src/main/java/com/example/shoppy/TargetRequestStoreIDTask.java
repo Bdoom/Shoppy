@@ -25,7 +25,7 @@ public class TargetRequestStoreIDTask extends AsyncTask<String, String, String> 
         HttpURLConnection urlConnection = null;
         StringBuilder sb = new StringBuilder();
 
-        String storeURL = "https://redsky.target.com/v2/stores/nearby/" + data[0] + "?key=eb2551e4accc14f38cc42d32fbc2b2ea&locale=en-US&limit=" + data[1] + "&range=" + data[2];
+        String storeURL = "https://redsky.target.com/v2/stores/nearby/" + data[0].trim() + "?key=eb2551e4accc14f38cc42d32fbc2b2ea&locale=en-US&limit=" + data[1].trim() + "&range=" + data[2].trim();
 
         try
         {
