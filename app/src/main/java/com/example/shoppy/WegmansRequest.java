@@ -13,15 +13,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.DataOutputStream;
+
+import java.util.HashMap;
 import java.util.ArrayList;
 
 public class WegmansRequest extends AsyncTask<String, String, String> {
 
     StringBuilder stringBuilderForLocationID = null;
+    String query = "";
 
     @Override
     protected String doInBackground(String... data) {
-        String query = data[1];
+        query = data[1];
         String storeSearchURL = "https://sp1004f27d.guided.ss-omtrdc.net/?q=*&do=location-search&sp_q_location_1=" + data[0] + "&sp_x_1=zip&sp_q_max_1=1000&sp_s=zip_proximity;sp_c=1000";
 
         HttpURLConnection urlConnection = null;
@@ -88,18 +92,24 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             }
         }
 
+        StringBuilder lineItemsBuilder = null;
+        HashMap<String, String> itemMap = new HashMap<String, String>();
+
         try
         {
             JSONObject jsonObject = new JSONObject(builder.toString());
             JSONArray results = jsonObject.getJSONArray("results");
-            StringBuilder lineItemsBuilder = new StringBuilder();
+            lineItemsBuilder = new StringBuilder();
             lineItemsBuilder.append("{\"LineItems\":[");
             for (int i = 0; i < results.length(); i++)
             {
                 try
                 {
                     JSONObject result = results.getJSONObject(i);
-                    int sku = result.getInt("sku");
+                    String sku = result.getString("sku");
+                    String itemName = result.getString("name");
+                    itemMap.put(sku, itemName);
+
                     if (i == results.length() - 1)
                     {
                         lineItemsBuilder.append("{\"Sku\":" + sku + ",\"Quantity\":1}"); // last element, no comma
@@ -114,12 +124,12 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
                     ex.printStackTrace();;
                 }
             }
+
             int storeID = GetStoreID();
 
             lineItemsBuilder.append("],\"StoreNumber\":\"" + storeID + "\"}");
 
             System.out.print(lineItemsBuilder.toString());
-
 
         }
         catch (JSONException ex)
@@ -127,8 +137,87 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             ex.printStackTrace();
         }
 
+        FinallyRequestItems(lineItemsBuilder, itemMap);
 
 
+    }
+
+    private void FinallyRequestItems(StringBuilder lineItemsBuilder, HashMap<String, String> itemMap)
+    {
+        String itemsAPIRequestUrl = "https://wegapi.azure-api.net/pricing/carttotal/false?api-version=1.0";
+
+        try {
+            URL url = new URL(itemsAPIRequestUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            conn.setRequestProperty("Accept","application/json");
+            conn.setRequestProperty("Referer", "https://www.wegmans.com/products/product-search.html?searchKey=" + query);
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Ocp-Apim-Subscription-Key", "9ab421ab7cc74f6c934b0406a917ed5c");
+
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+
+            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+            os.writeBytes(lineItemsBuilder.toString());
+
+            os.flush();
+            os.close();
+
+            InputStream inputStream = new BufferedInputStream(conn.getInputStream());
+            String responseContent = convertStreamToString(inputStream);
+
+            JSONObject responseJSON = new JSONObject(responseContent);
+            JSONArray lineItemsArrayObject = responseJSON.getJSONArray("LineItems");
+            double cheapestPrice = Double.MAX_VALUE;
+            String sku = "";
+            System.out.println("JSON FOR ITEMS: " + responseContent);
+            for (int i = 0; i < lineItemsArrayObject.length(); i++)
+            {
+                JSONObject obj = lineItemsArrayObject.getJSONObject(i);
+                double price = obj.getDouble("Price");
+
+                if (price < cheapestPrice)
+                {
+                    sku = obj.getString("Sku");
+
+                    cheapestPrice = price;
+                }
+            }
+
+            System.out.println("Item Name: " + itemMap.get(sku));
+            System.out.println("Cheapest price :" + cheapestPrice);
+
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String convertStreamToString(InputStream is) {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append((line + "\n"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
     }
 
     private int GetStoreID()
