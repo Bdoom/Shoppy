@@ -29,7 +29,8 @@
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="@android:string/search_go"/>
+        android:autofillHints="@android:string/search_go"
+        android:hint="@android:string/search_go"/>
 
     <Button
         android:id="@+id/btnSearch"
