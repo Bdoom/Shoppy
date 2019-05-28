@@ -17,6 +17,7 @@ import android.content.Context;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import android.os.Build;
 import android.widget.Button;
 
 import java.io.IOException;
@@ -110,6 +111,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public static boolean isEmulator() {
+        return Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +138,20 @@ public class MainActivity extends AppCompatActivity {
                     EditText txtSearch = findViewById(R.id.txtSearch);
                     MakeRequest(txtSearch.getText().toString());
                     WegmansRequest wegRequest = new WegmansRequest();
-                    wegRequest.execute(GetZipCode(), "Pizza");
+                    WalmartRequest walmartRequest = new WalmartRequest();
+
+                    if (isEmulator())
+                    {
+                        wegRequest.execute("20876", "Pizza");
+                        walmartRequest.execute("20876", "Pizza");
+                    }
+                    else
+                    {
+                        String zipCode = GetZipCode();
+                        wegRequest.execute(zipCode, "Pizza");
+                        walmartRequest.execute(zipCode, "Pizza");
+                    }
+
                 }
             }
         });
