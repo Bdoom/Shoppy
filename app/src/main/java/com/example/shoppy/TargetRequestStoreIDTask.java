@@ -2,7 +2,6 @@ package com.example.shoppy;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +49,6 @@ public class TargetRequestStoreIDTask extends AsyncTask<String, String, String> 
                 sb.append(inputLine);
             }
 
-            System.out.println(sb);
             ParseXML(sb);
 
         } catch (IOException ex)

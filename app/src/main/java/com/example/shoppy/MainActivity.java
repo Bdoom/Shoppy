@@ -57,38 +57,36 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void MakeRequest(String query)
-    {
-
-        checkPermissions();
-
+    public String GetZipCode() {
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = null;
-        try
-        {
-           location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        catch (SecurityException ex)
-        {
+        try {
+            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException ex) {
             ex.printStackTrace();
         }
 
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
-        try
-        {
+        try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-            TargetRequestStoreIDTask req = new TargetRequestStoreIDTask(myActivity);
-            req.execute(addresses.get(0).getPostalCode(), "1", "5", query);
-        }
-        catch (IOException ex)
-        {
+            return addresses.get(0).getPostalCode();
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        return "Could not determine zip code.";
+    }
+
+    private void MakeRequest(String query) {
+
+        checkPermissions();
+
+        TargetRequestStoreIDTask req = new TargetRequestStoreIDTask(myActivity);
+        req.execute(GetZipCode(), "1", "5", query);
 
     }
 
@@ -124,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.btnSearch)
-                {
+                if (v.getId() == R.id.btnSearch) {
                     EditText txtSearch = findViewById(R.id.txtSearch);
                     MakeRequest(txtSearch.getText().toString());
+                    WegmansRequest wegRequest = new WegmansRequest();
+                    wegRequest.execute(GetZipCode(), "Pizza");
                 }
             }
         });

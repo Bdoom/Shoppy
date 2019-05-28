@@ -2,7 +2,6 @@ package com.example.shoppy;
 
 import android.os.AsyncTask;
 
-import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStream;
@@ -16,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.speech.tts.TextToSpeech;
 import android.widget.TextView;
 
 public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
@@ -50,9 +48,6 @@ public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
                 sb.append(inputLine);
             }
 
-            System.out.println(sb);
-            System.out.println(apiURL);
-
         } catch (IOException ex)
         {
             ex.printStackTrace();
@@ -72,7 +67,6 @@ public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
 
         try
         {
