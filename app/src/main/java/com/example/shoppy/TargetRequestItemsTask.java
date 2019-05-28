@@ -1,6 +1,8 @@
 package com.example.shoppy;
 
 import android.os.AsyncTask;
+
+import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStream;
@@ -13,9 +15,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.speech.tts.TextToSpeech;
+import android.widget.TextView;
+
 public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
 
     StringBuilder sb = null;
+    Activity myActivity = null;
+
+    public TargetRequestItemsTask(Activity myActivity)
+    {
+        this.myActivity = myActivity;
+    }
 
     @Override
     protected String doInBackground(String... data) {
@@ -75,7 +87,9 @@ public class TargetRequestItemsTask extends AsyncTask<String, String, String> {
                 String title = jsonItem.getString("title");
                 JSONObject jsonPrice = jsonItem.getJSONObject("price");
                 double price = jsonPrice.getDouble("current_retail");
+                TextView priceValueText = myActivity.findViewById(R.id.txtPriceActualValue);
 
+                priceValueText.setText(Double.toString(price));
             }
 
         }

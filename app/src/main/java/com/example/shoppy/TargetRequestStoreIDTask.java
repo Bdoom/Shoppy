@@ -1,6 +1,8 @@
 package com.example.shoppy;
 
+import android.app.Activity;
 import android.os.AsyncTask;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +20,13 @@ public class TargetRequestStoreIDTask extends AsyncTask<String, String, String> 
 
     String id = "";
     String query = "";
+    Activity myActivity;
+
+    public TargetRequestStoreIDTask(Activity myActivity)
+    {
+        this.myActivity = myActivity;
+    }
+
 
     @Override
     protected String doInBackground(String... data) {
@@ -91,7 +100,7 @@ public class TargetRequestStoreIDTask extends AsyncTask<String, String, String> 
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
-        TargetRequestItemsTask reqItems = new TargetRequestItemsTask();
+        TargetRequestItemsTask reqItems = new TargetRequestItemsTask(myActivity);
         reqItems.execute(query, id);
 
     }

@@ -1,5 +1,6 @@
 package com.example.shoppy;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
+    private Activity myActivity;
 
     private boolean checkPermissions() {
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-            TargetRequestStoreIDTask req = new TargetRequestStoreIDTask();
+            TargetRequestStoreIDTask req = new TargetRequestStoreIDTask(myActivity);
             req.execute(addresses.get(0).getPostalCode(), "1", "5", query);
         }
         catch (IOException ex)
@@ -129,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        myActivity = this;
 
     }
 
