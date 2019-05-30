@@ -106,7 +106,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
         }
 
         StringBuilder lineItemsBuilder = null;
-        itemMap = new HashMap<String, String>();
+        itemMap = new HashMap<>();
 
         System.out.println(wegItemSearch);
 
@@ -143,8 +143,6 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             int storeID = GetStoreID();
 
             lineItemsBuilder.append("],\"StoreNumber\":\"" + storeID + "\"}");
-
-            System.out.print(lineItemsBuilder.toString());
 
         }
         catch (JSONException ex)
@@ -188,8 +186,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             JSONObject responseJSON = new JSONObject(responseContent);
             JSONArray lineItemsArrayObject = responseJSON.getJSONArray("LineItems");
             String sku = "";
-            System.out.println("JSON FOR ITEMS: " + responseContent);
-            priceMap = new HashMap<String, String>();
+            priceMap = new HashMap<>();
 
             for (int i = 0; i < lineItemsArrayObject.length(); i++)
             {
@@ -203,8 +200,6 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
                 }
 
             }
-
-            System.out.println("Item Name: " + itemMap.get(sku));
 
             conn.disconnect();
         } catch (Exception e) {

@@ -32,8 +32,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
         String query = data[1];
         String walmartSearchURL = "https://www.walmart.com/search/api/wpa?type=product&min=2&max=900&zipCode=" + zipCode + "&keyword=" + query + "&mloc=bottom&pageType=search";
 
-        System.out.println("walmart search url: " + walmartSearchURL);
-
         HttpURLConnection urlConnection = null;
         StringBuilder sb = new StringBuilder();
 
@@ -65,7 +63,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
-        System.out.println("Results: " + result);
         String productName = "";
 
         MainActivity mainActivity = (MainActivity)activity;
