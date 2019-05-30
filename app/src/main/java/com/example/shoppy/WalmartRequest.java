@@ -1,6 +1,11 @@
 package com.example.shoppy;
 
+import android.app.Activity;
 import android.os.AsyncTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -13,11 +18,21 @@ import java.net.URL;
 public class WalmartRequest extends AsyncTask<String, String, String> {
 
 
+    private Activity activity;
+
+    public WalmartRequest(Activity activity)
+    {
+        this.activity = activity;
+    }
+
+
     @Override
     protected String doInBackground(String... data) {
         String zipCode = data[0];
         String query = data[1];
-        String walmartSearchURL = "https://www.walmart.com/search/api/wpa?type=product&min=2&max=20&zipCode=" + zipCode + "&keyword=" + query + "&mloc=bottom&pageType=search";
+        String walmartSearchURL = "https://www.walmart.com/search/api/wpa?type=product&min=2&max=900&zipCode=" + zipCode + "&keyword=" + query + "&mloc=bottom&pageType=search";
+
+        System.out.println("walmart search url: " + walmartSearchURL);
 
         HttpURLConnection urlConnection = null;
         StringBuilder sb = new StringBuilder();
@@ -35,8 +50,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
                 sb.append(inputLine);
             }
 
-            System.out.println("Walmart: " + sb);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -53,6 +66,36 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
         super.onPostExecute(result);
 
         System.out.println("Results: " + result);
+        String productName = "";
+
+        MainActivity mainActivity = (MainActivity)activity;
+
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+
+            JSONObject resultObject = jsonObject.getJSONObject("result");
+
+            JSONArray products = resultObject.getJSONArray("products");
+
+
+            for (int i = 0; i < products.length(); i++) {
+
+                JSONObject obj = products.getJSONObject(i);
+                JSONObject priceObj = obj.getJSONObject("price");
+                productName = obj.getString("productName");
+                String currentPrice = priceObj.getString("currentPrice");
+                if (currentPrice != null && !currentPrice.isEmpty() && currentPrice != "null") {
+                    double price = Double.parseDouble(currentPrice);
+                    mainActivity.WalmartRequestHashMap.put(productName, price);
+                }
+            }
+
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
+        mainActivity.RequestFinished();
+
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.shoppy;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -15,13 +16,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.DataOutputStream;
 
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WegmansRequest extends AsyncTask<String, String, String> {
 
+    Activity activity;
+
+    public WegmansRequest(Activity activity)
+    {
+        this.activity = activity;
+    }
+
+
     StringBuilder stringBuilderForLocationID = null;
     String query = "";
+    HashMap<String, String> itemMap = null; // key = sku, value = itemName, give sku, returns item name.
+    HashMap<String, String> priceMap = null;
 
     @Override
     protected String doInBackground(String... data) {
@@ -60,13 +71,15 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
         return "";
     }
 
-    private  void WegItemSearch(String query)
+    private void WegItemSearch(String query)
     {
         /*
         curl 'https://wegapi.azure-api.net/pricing/carttotal/false?api-version=1.0' -H 'Accept: application/json, text/plain, ' -H 'Referer: https://www.wegmans.com/products/product-search.html?searchKey=Pizza' -H 'Origin: https://www.wegmans.com' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36' -H 'DNT: 1' -H 'Ocp-Apim-Subscription-Key: 9ab421ab7cc74f6c934b0406a917ed5c' -H 'Content-Type: application/json' --data-binary '{"LineItems":[{"Sku":"581943","Quantity":1},{"Sku":"37996","Quantity":1},{"Sku":"581945","Quantity":1},{"Sku":"13552","Quantity":1},{"Sku":"581947","Quantity":1},{"Sku":"626169","Quantity":1},{"Sku":"607295","Quantity":1},{"Sku":"581956","Quantity":1},{"Sku":"564374","Quantity":1},{"Sku":"677076","Quantity":1},{"Sku":"26875","Quantity":1},{"Sku":"26876","Quantity":1},{"Sku":"43529","Quantity":1},{"Sku":"426018","Quantity":1},{"Sku":"14546","Quantity":1},{"Sku":"43530","Quantity":1},{"Sku":"426022","Quantity":1},{"Sku":"39209","Quantity":1}],"StoreNumber":"56"}' --compressed
          */
         //https://wegapi.azure-api.net/pricing/carttotal/false?api-version=1.0
         String wegItemSearch = "https://sp1004f27d.guided.ss-omtrdc.net/?do=prod-search;storeNumber=" + GetStoreID() + ";sort=relevance;sp_c=18;sp_n=1;q=" + query;
+        // has skus, but not price also has product name... "name" and "sku"
+
 
         HttpURLConnection urlConnection = null;
         StringBuilder builder = new StringBuilder();
@@ -93,7 +106,9 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
         }
 
         StringBuilder lineItemsBuilder = null;
-        HashMap<String, String> itemMap = new HashMap<String, String>();
+        itemMap = new HashMap<String, String>();
+
+        System.out.println(wegItemSearch);
 
         try
         {
@@ -172,24 +187,24 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
 
             JSONObject responseJSON = new JSONObject(responseContent);
             JSONArray lineItemsArrayObject = responseJSON.getJSONArray("LineItems");
-            double cheapestPrice = Double.MAX_VALUE;
             String sku = "";
             System.out.println("JSON FOR ITEMS: " + responseContent);
+            priceMap = new HashMap<String, String>();
+
             for (int i = 0; i < lineItemsArrayObject.length(); i++)
             {
                 JSONObject obj = lineItemsArrayObject.getJSONObject(i);
                 double price = obj.getDouble("Price");
-
-                if (price < cheapestPrice)
+                sku = obj.getString("Sku");
+                String strPrice = Double.toString(price);
+                if (strPrice != null)
                 {
-                    sku = obj.getString("Sku");
-
-                    cheapestPrice = price;
+                    priceMap.put(sku, strPrice);
                 }
+
             }
 
             System.out.println("Item Name: " + itemMap.get(sku));
-            System.out.println("Cheapest price :" + cheapestPrice);
 
             conn.disconnect();
         } catch (Exception e) {
@@ -241,8 +256,23 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
+        // Create a new method of getting both the item name, and the price in a single hashmap, lined up correctly.
+        // itemMap = key is the sku, it returns an item name
+        // priceMap = key is the sku, it returns a price.
+        HashMap<String, Double> nameAndPriceHashMap = new HashMap<>();
+        for (String sku : itemMap.keySet())
+        {
+            String itemName = itemMap.get(sku);
+            String itemPrice = priceMap.get(sku);
+            if (itemPrice != null && itemName != null)
+            {
+                double price = Double.parseDouble(itemPrice);
+                nameAndPriceHashMap.put(itemName, price);
+            }
+        }
 
-
+        MainActivity mainActivity = (MainActivity)activity;
+        mainActivity.WegmansRequestHashMap = nameAndPriceHashMap;
 
     }
 }

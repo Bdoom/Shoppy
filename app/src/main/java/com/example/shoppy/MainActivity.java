@@ -21,21 +21,60 @@ import android.os.Build;
 import android.widget.Button;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private Activity myActivity;
 
+    public HashMap<String, Double> TargetRequestHashMap = new HashMap<>();
+    public HashMap<String, Double> WalmartRequestHashMap = new HashMap<>();
+    public HashMap<String, Double> WegmansRequestHashMap = new HashMap<>();
+
+    private int NumberOfRequests = 2; // For now, just three, target, walmart, and wegmans.
+
+    public void RequestFinished()
+    {
+        NumberOfRequests--;
+        if (NumberOfRequests <= 0)
+        {
+            AllRequestsFinished();
+        }
+    }
+
+    private void AllRequestsFinished()
+    {
+        // Sort the request data.
+
+        for (double d : TargetRequestHashMap.values())
+        {
+            System.out.print("Target finished req: " + d);
+        }
+
+        for (double d : WalmartRequestHashMap.values())
+        {
+            System.out.print("Walmart finished req: " + d);
+        }
+        //double targetMin = Collections.min(TargetRequestHashMap.values());
+        //double walmartMin = Collections.min(WalmartRequestHashMap.values());
+
+        //System.out.println("Target min: " + targetMin);
+        //System.out.print("Walmart min: " + walmartMin);
+
+
+
+    }
+
     private boolean checkPermissions() {
 
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.INTERNET,
                 Manifest.permission.INTERNET,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -59,6 +98,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String GetZipCode() {
+
+        if (!checkPermissions())
+        {
+            return null;
+        }
+
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -69,26 +114,18 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
 
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
+        if (location != null) {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
 
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            return addresses.get(0).getPostalCode();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                return addresses.get(0).getPostalCode();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-
         return "Could not determine zip code.";
-    }
-
-    private void MakeRequest(String query) {
-
-        checkPermissions();
-
-        TargetRequestStoreIDTask req = new TargetRequestStoreIDTask(myActivity);
-        req.execute(GetZipCode(), "1", "5", query);
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -136,20 +173,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (v.getId() == R.id.btnSearch) {
                     EditText txtSearch = findViewById(R.id.txtSearch);
-                    MakeRequest(txtSearch.getText().toString());
-                    WegmansRequest wegRequest = new WegmansRequest();
-                    WalmartRequest walmartRequest = new WalmartRequest();
+                    checkPermissions();
+                    TargetRequest targetRequest = new TargetRequest(myActivity);
+                    WegmansRequest wegRequest = new WegmansRequest(myActivity);
+                    WalmartRequest walmartRequest = new WalmartRequest(myActivity);
 
                     if (isEmulator())
                     {
-                        wegRequest.execute("20876", "Pizza");
-                        walmartRequest.execute("20876", "Pizza");
+                        wegRequest.execute("20876", txtSearch.getText().toString());
+                        walmartRequest.execute("20876", txtSearch.getText().toString());
+                        targetRequest.execute("20876", "1", "5", txtSearch.getText().toString());
+
                     }
                     else
                     {
                         String zipCode = GetZipCode();
-                        wegRequest.execute(zipCode, "Pizza");
-                        walmartRequest.execute(zipCode, "Pizza");
+                        wegRequest.execute(zipCode, txtSearch.getText().toString());
+                        walmartRequest.execute(zipCode, txtSearch.getText().toString());
+                        targetRequest.execute(zipCode, "1", "5", txtSearch.getText().toString());
                     }
 
                 }
