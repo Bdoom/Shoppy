@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.DataOutputStream;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WegmansRequest extends AsyncTask<String, String, String> {
@@ -32,7 +31,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
     StringBuilder stringBuilderForLocationID = null;
     String query = "";
     HashMap<String, String> itemMap = null; // key = sku, value = itemName, give sku, returns item name.
-    HashMap<String, String> priceMap = null;
+    HashMap<String, String> priceMap = null; // key = sku, value = price, give sku, returns price
 
     @Override
     protected String doInBackground(String... data) {
@@ -268,6 +267,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
 
         MainActivity mainActivity = (MainActivity)activity;
         mainActivity.WegmansRequestHashMap = nameAndPriceHashMap;
+        mainActivity.RequestFinished();
 
     }
 }

@@ -1,33 +1,55 @@
 package com.example.shoppy;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-import android.location.Geocoder;
-import android.location.Address;
+
+import android.Manifest;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.location.Location;
+import android.location.Geocoder;
+import android.location.Address;
 import android.content.Context;
-import android.Manifest;
-import android.content.pm.PackageManager;
-
+import java.io.IOException;
+import android.support.design.widget.BottomNavigationView;
+import java.util.Locale;
+import android.view.View;
+import android.view.MenuItem;
 import android.os.Build;
 import android.widget.Button;
+import android.widget.EditText;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
+import androidx.navigation.fragment.NavHostFragment;
 
-public class MainActivity extends AppCompatActivity {
+// Add multiple stores.
+// Bed Stores:
+// Matress Firm
+// Matress warehouse
+// Sears
+// Macy's
+// Sleep number?
+// Electronics Stores:
+// Best Buy
+// Microcenter
+// Clothing?:
+// abercrombie & fitch
+// hollister
+// gap
+
+
+
+
+public class MainActivity extends AppCompatActivity implements  mainFragment.OnFragmentInteractionListener, listFragment.OnFragmentInteractionListener, graphFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
     private Activity myActivity;
@@ -36,36 +58,58 @@ public class MainActivity extends AppCompatActivity {
     public HashMap<String, Double> WalmartRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WegmansRequestHashMap = new HashMap<>();
 
-    private int NumberOfRequests = 2; // For now, just three, target, walmart, and wegmans.
+    private int NumberOfRequests = 3; // For now, just three, target, walmart, and wegmans.
 
-    public void RequestFinished()
-    {
+    public void RequestFinished() {
         NumberOfRequests--;
-        if (NumberOfRequests <= 0)
-        {
+        if (NumberOfRequests <= 0) {
             AllRequestsFinished();
         }
     }
 
-    private void AllRequestsFinished()
-    {
+    private void AllRequestsFinished() {
         // Sort the request data.
-
-        for (double d : TargetRequestHashMap.values())
-        {
-            System.out.print("Target finished req: " + d);
-        }
-
-        for (double d : WalmartRequestHashMap.values())
-        {
-            System.out.print("Walmart finished req: " + d);
-        }
         //double targetMin = Collections.min(TargetRequestHashMap.values());
         //double walmartMin = Collections.min(WalmartRequestHashMap.values());
+        //double wegmansMin = Collections.min(WegmansRequestHashMap.values());
 
-        //System.out.println("Target min: " + targetMin);
-        //System.out.print("Walmart min: " + walmartMin);
+        String cheapestTargetItemName = "";
+        double cheapestTargetPrice = Double.MAX_VALUE;
 
+        String cheapestWalmartItemName = "";
+        double cheapestWalmartPrice = Double.MAX_VALUE;
+
+        String cheapestWegmansItemName = "";
+        double cheapestWegmansPrice = Double.MAX_VALUE;
+
+        for (Map.Entry<String, Double> entry : TargetRequestHashMap.entrySet()) {
+            if (entry.getValue() < cheapestTargetPrice)
+            {
+                cheapestTargetPrice = entry.getValue();
+                cheapestTargetItemName = entry.getKey();
+            }
+
+        }
+
+        for (Map.Entry<String, Double> entry : WalmartRequestHashMap.entrySet()) {
+            if (entry.getValue() < cheapestWalmartPrice)
+            {
+                cheapestWalmartPrice = entry.getValue();
+                cheapestWalmartItemName = entry.getKey();
+            }
+        }
+
+        for (Map.Entry<String, Double> entry : WegmansRequestHashMap.entrySet()) {
+            if (entry.getValue() < cheapestWegmansPrice)
+            {
+                cheapestWegmansPrice = entry.getValue();
+                cheapestWegmansItemName = entry.getKey();
+            }
+        }
+
+        System.out.println("Cheapest Target Item Name: " + cheapestTargetItemName + " Price: " + cheapestTargetPrice);
+        System.out.println("Cheapest Walmart Item Name: " + cheapestWalmartItemName + " Price: " + cheapestWalmartPrice);
+        System.out.println("Cheapest Wegmans Item Name: " + cheapestWegmansItemName + " Price: " + cheapestWegmansPrice);
 
 
     }
@@ -99,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String GetZipCode() {
 
-        if (!checkPermissions())
-        {
+        if (!checkPermissions()) {
             return null;
         }
 
@@ -133,18 +176,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_main:
+                    selectedFragment = mainFragment.newInstance();
+                    break;
 
-                    return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_list:
+                    selectedFragment = new listFragment();
+                    break;
 
-                    return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_graphs:
+                    selectedFragment = new graphFragment();
+                    break;
 
-                    return true;
             }
-            return false;
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, selectedFragment);
+            transaction.commit();
+
+
+            return true;
         }
     };
 
@@ -159,6 +211,46 @@ public class MainActivity extends AppCompatActivity {
                 || "google_sdk".equals(Build.PRODUCT);
     }
 
+    private void ResetSearch()
+    {
+        TargetRequestHashMap.clear();
+        WegmansRequestHashMap.clear();
+        WalmartRequestHashMap.clear();
+        NumberOfRequests = 3;
+        System.out.println("Cleared HashMap, and reset number of requests.");
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+
+    public void MakeRequest()
+    {
+        EditText txtSearch = findViewById(R.id.txtSearch);
+        checkPermissions();
+        ResetSearch();
+
+        TargetRequest targetRequest = new TargetRequest(myActivity);
+        WegmansRequest wegRequest = new WegmansRequest(myActivity);
+        WalmartRequest walmartRequest = new WalmartRequest(myActivity);
+
+        String query = txtSearch.getText().toString();
+
+        if (isEmulator()) {
+            wegRequest.execute("20876", query);
+            walmartRequest.execute("20876", query);
+            targetRequest.execute("20876", "1", "5", query);
+
+        } else {
+            String zipCode = GetZipCode();
+            wegRequest.execute(zipCode, query);
+            walmartRequest.execute(zipCode, query);
+            targetRequest.execute(zipCode, "1", "5", query);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,35 +259,10 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Button btnSearch = findViewById(R.id.btnSearch);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.btnSearch) {
-                    EditText txtSearch = findViewById(R.id.txtSearch);
-                    checkPermissions();
-                    TargetRequest targetRequest = new TargetRequest(myActivity);
-                    WegmansRequest wegRequest = new WegmansRequest(myActivity);
-                    WalmartRequest walmartRequest = new WalmartRequest(myActivity);
-
-                    if (isEmulator())
-                    {
-                        wegRequest.execute("20876", txtSearch.getText().toString());
-                        walmartRequest.execute("20876", txtSearch.getText().toString());
-                        targetRequest.execute("20876", "1", "5", txtSearch.getText().toString());
-
-                    }
-                    else
-                    {
-                        String zipCode = GetZipCode();
-                        wegRequest.execute(zipCode, txtSearch.getText().toString());
-                        walmartRequest.execute(zipCode, txtSearch.getText().toString());
-                        targetRequest.execute(zipCode, "1", "5", txtSearch.getText().toString());
-                    }
-
-                }
-            }
-        });
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        mainFragment mainFragment = new mainFragment();
+        transaction.replace(R.id.frame_layout, mainFragment);
+        transaction.commit();
 
         myActivity = this;
 

@@ -93,7 +93,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
 
         mainActivity.RequestFinished();
 
-
     }
 
 }
