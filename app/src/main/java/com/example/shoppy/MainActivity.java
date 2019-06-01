@@ -1,6 +1,7 @@
 package com.example.shoppy;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -25,8 +26,30 @@ import android.os.Build;
 import android.widget.Button;
 import android.widget.EditText;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.navigation.fragment.NavHostFragment;
+
+// Add multiple stores.
+// Bed Stores:
+// Matress Firm
+// Matress warehouse
+// Sears
+// Macy's
+// Sleep number?
+// Electronics Stores:
+// Best Buy
+// Microcenter
+// Clothing?:
+// abercrombie & fitch
+// hollister
+// gap
+
+
+
+
+public class MainActivity extends AppCompatActivity implements  mainFragment.OnFragmentInteractionListener, listFragment.OnFragmentInteractionListener, graphFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
     private Activity myActivity;
@@ -153,18 +176,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_main:
+                    selectedFragment = mainFragment.newInstance();
+                    break;
 
-                    return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_list:
+                    selectedFragment = new listFragment();
+                    break;
 
-                    return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_graphs:
+                    selectedFragment = new graphFragment();
+                    break;
 
-                    return true;
             }
-            return false;
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, selectedFragment);
+            transaction.commit();
+
+
+            return true;
         }
     };
 
@@ -189,6 +221,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+
+    public void MakeRequest()
+    {
+        EditText txtSearch = findViewById(R.id.txtSearch);
+        checkPermissions();
+        ResetSearch();
+
+        TargetRequest targetRequest = new TargetRequest(myActivity);
+        WegmansRequest wegRequest = new WegmansRequest(myActivity);
+        WalmartRequest walmartRequest = new WalmartRequest(myActivity);
+
+        String query = txtSearch.getText().toString();
+
+        if (isEmulator()) {
+            wegRequest.execute("20876", query);
+            walmartRequest.execute("20876", query);
+            targetRequest.execute("20876", "1", "5", query);
+
+        } else {
+            String zipCode = GetZipCode();
+            wegRequest.execute(zipCode, query);
+            walmartRequest.execute(zipCode, query);
+            targetRequest.execute(zipCode, "1", "5", query);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -196,39 +259,13 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Button btnSearch = findViewById(R.id.btnSearch);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        mainFragment mainFragment = new mainFragment();
+        transaction.replace(R.id.frame_layout, mainFragment);
+        transaction.commit();
 
         myActivity = this;
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.btnSearch) {
-                    EditText txtSearch = findViewById(R.id.txtSearch);
-                    checkPermissions();
-                    ResetSearch();
-
-                    TargetRequest targetRequest = new TargetRequest(myActivity);
-                    WegmansRequest wegRequest = new WegmansRequest(myActivity);
-                    WalmartRequest walmartRequest = new WalmartRequest(myActivity);
-
-                    String query = txtSearch.getText().toString();
-
-                    if (isEmulator()) {
-                        wegRequest.execute("20876", query);
-                        walmartRequest.execute("20876", query);
-                        targetRequest.execute("20876", "1", "5", query);
-
-                    } else {
-                        String zipCode = GetZipCode();
-                        wegRequest.execute(zipCode, query);
-                        walmartRequest.execute(zipCode, query);
-                        targetRequest.execute(zipCode, "1", "5", query);
-                    }
-
-                }
-            }
-        });
     }
 
 }
