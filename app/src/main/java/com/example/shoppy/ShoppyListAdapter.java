@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.view.LayoutInflater;
 
-import org.w3c.dom.Text;
-
 public class ShoppyListAdapter extends RecyclerView.Adapter<ShoppyListAdapter.ShoppyListViewHolder> {
 
     private String[] mData;

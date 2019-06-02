@@ -1,6 +1,7 @@
 package com.example.shoppy;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,12 +13,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
 
+import android.app.AlertDialog;
+import android.widget.EditText;
+import android.text.InputType;
+import android.content.DialogInterface;
+
+import android.content.ContentValues;
+import java.util.ArrayList;
+
 public class listFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter mAdapter;
+    private String dataFileName = "shoppingListDataFile";
 
 
     public listFragment() {
@@ -39,12 +49,38 @@ public class listFragment extends Fragment {
 
     }
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener()
-    {
+    private void AddNewListItem(String newItemName) {
+
+    }
+
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.btnAddToList) {
-                System.out.println("test");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.title_add_new_shopping_item);
+
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AddNewListItem(input.getText().toString());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
 
             }
         }
@@ -63,11 +99,19 @@ public class listFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // load "listData" from file? or cloud?
-        String[] listData = {"test5", "test2", "test3"};
-        mAdapter = new ShoppyListAdapter(listData);
+        ArrayList<String> listData = new ArrayList<String>();
+
+        ShoppySQLiteHelper shoppySQLiteHelper = new ShoppySQLiteHelper(getContext());
+        SQLiteDatabase sqLiteDatabase = shoppySQLiteHelper.getReadableDatabase();
+
+
+
+
+        mAdapter = new ShoppyListAdapter(listData.toArray(new String[0]));
         recyclerView.setAdapter(mAdapter);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
 
         return rootView;
     }
