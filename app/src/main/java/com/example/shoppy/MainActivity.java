@@ -2,9 +2,7 @@ package com.example.shoppy;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-
+import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,18 +15,16 @@ import android.location.Geocoder;
 import android.location.Address;
 import android.content.Context;
 import java.io.IOException;
-import android.support.design.widget.BottomNavigationView;
 import java.util.Locale;
 import android.view.MenuItem;
 import android.os.Build;
 import android.widget.EditText;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.AdView;
 
 // Add multiple stores.
 // Bed Stores:
@@ -174,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        public boolean onNavigationItemSelected(MenuItem item) {
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_main:
@@ -182,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
                     break;
 
                 case R.id.navigation_list:
-                    selectedFragment = new listFragment();
+                    selectedFragment = listFragment.newInstance();
                     break;
 
                 case R.id.navigation_graphs:
@@ -248,6 +244,11 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
             walmartRequest.execute(zipCode, query);
             targetRequest.execute(zipCode, "1", "5", query);
         }
+    }
+
+    public void MakeMultipleRequest(String[] listToSearch)
+    {
+
     }
 
     @Override

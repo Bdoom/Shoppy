@@ -1,24 +1,21 @@
 package com.example.shoppy;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import android.app.AlertDialog;
 import android.widget.EditText;
 import android.text.InputType;
 import android.content.DialogInterface;
-
-import android.content.ContentValues;
 import java.util.ArrayList;
 
 public class listFragment extends Fragment {
@@ -26,9 +23,8 @@ public class listFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter mAdapter;
-    private String dataFileName = "shoppingListDataFile";
-
+    public RecyclerView.Adapter mAdapter;
+    public ArrayList<String> listData;
 
     public listFragment() {
         // Required empty public constructor
@@ -50,7 +46,9 @@ public class listFragment extends Fragment {
     }
 
     private void AddNewListItem(String newItemName) {
-
+        // TODO: Start AsyncTask to insert new item, then update the view.
+        AsyncAddNewShoppingListItem asyncAddNewShoppingListItem = new AsyncAddNewShoppingListItem(this, newItemName);
+        asyncAddNewShoppingListItem.execute();
     }
 
 
@@ -99,21 +97,24 @@ public class listFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // load "listData" from file? or cloud?
-        ArrayList<String> listData = new ArrayList<String>();
+        listData = new ArrayList<String>();
 
-        ShoppySQLiteHelper shoppySQLiteHelper = new ShoppySQLiteHelper(getContext());
-        SQLiteDatabase sqLiteDatabase = shoppySQLiteHelper.getReadableDatabase();
+        // start async task
+        AsyncGetShoppingList asyncGetShoppingList = new AsyncGetShoppingList(this);
+        asyncGetShoppingList.execute();
 
-
-
-
-        mAdapter = new ShoppyListAdapter(listData.toArray(new String[0]));
-        recyclerView.setAdapter(mAdapter);
+        SetupAdapter();
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
 
         return rootView;
+    }
+
+    public void SetupAdapter()
+    {
+        mAdapter = new ShoppyListAdapter(listData.toArray(new String[0]), getContext(), this);
+        recyclerView.setAdapter(mAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

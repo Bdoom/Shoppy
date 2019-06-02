@@ -3,7 +3,7 @@ package com.example.shoppy;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +42,9 @@ public class mainFragment extends Fragment {
         Button btnSearch = rootView.findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(mOnClickListener);
 
+        Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
+        btnSearchFromList.setOnClickListener(mOnClickListener);
+
         return rootView;
     }
 
@@ -49,13 +52,18 @@ public class mainFragment extends Fragment {
     {
         @Override
         public void onClick(View v) {
+            MainActivity mainActivity = (MainActivity)getActivity();
             if (v.getId() == R.id.btnSearch) {
-                System.out.println("test");
-                MainActivity mainActivity = (MainActivity)getActivity();
                 if (mainActivity != null)
                 {
                     mainActivity.MakeRequest();
                 }
+            }
+
+            if (v.getId() == R.id.btnSearchFromList)
+            {
+                String[] test = {""};
+                mainActivity.MakeMultipleRequest(test);
             }
         }
     };
