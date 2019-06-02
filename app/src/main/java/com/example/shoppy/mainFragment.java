@@ -39,7 +39,7 @@ public class mainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        Button btnSearch = (Button) rootView.findViewById(R.id.btnSearch);
+        Button btnSearch = rootView.findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(mOnClickListener);
 
         return rootView;

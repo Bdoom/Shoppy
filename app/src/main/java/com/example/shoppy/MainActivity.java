@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import android.Manifest;
 import java.util.List;
@@ -20,16 +19,16 @@ import android.content.Context;
 import java.io.IOException;
 import android.support.design.widget.BottomNavigationView;
 import java.util.Locale;
-import android.view.View;
 import android.view.MenuItem;
 import android.os.Build;
-import android.widget.Button;
 import android.widget.EditText;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import androidx.navigation.fragment.NavHostFragment;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdView;
 
 // Add multiple stores.
 // Bed Stores:
@@ -42,16 +41,16 @@ import androidx.navigation.fragment.NavHostFragment;
 // Best Buy
 // Microcenter
 // Clothing?:
-// abercrombie & fitch
-// hollister
+// Abercrombie & fitch
+// Hollister
 // gap
-
-
-
+// Hotels?
+// Compare hotel prices?
+// Flights?
+// Compare flight prices?
 
 public class MainActivity extends AppCompatActivity implements  mainFragment.OnFragmentInteractionListener, listFragment.OnFragmentInteractionListener, graphFragment.OnFragmentInteractionListener {
 
-    private TextView mTextMessage;
     private Activity myActivity;
 
     public HashMap<String, Double> TargetRequestHashMap = new HashMap<>();
@@ -256,13 +255,14 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         mainFragment mainFragment = new mainFragment();
         transaction.replace(R.id.frame_layout, mainFragment);
         transaction.commit();
+
+        MobileAds.initialize(this, "ca-app-pub-6636580205361410~8791143179");
 
         myActivity = this;
 

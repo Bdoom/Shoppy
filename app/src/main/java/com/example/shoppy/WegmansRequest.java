@@ -54,8 +54,6 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
                 stringBuilderForLocationID.append(inputLine);
             }
 
-            System.out.println(stringBuilderForLocationID);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -106,8 +104,6 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
 
         StringBuilder lineItemsBuilder = null;
         itemMap = new HashMap<>();
-
-        System.out.println(wegItemSearch);
 
         try
         {
