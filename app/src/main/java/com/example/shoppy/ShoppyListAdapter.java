@@ -94,6 +94,7 @@ public class ShoppyListAdapter extends RecyclerView.Adapter<ShoppyListAdapter.Sh
 
                         }
                     });
+
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -111,8 +112,6 @@ public class ShoppyListAdapter extends RecyclerView.Adapter<ShoppyListAdapter.Sh
                 TextView txtView = parent.findViewById(R.id.shoppingListItem);
 
                 asyncDeleteShoppingListItem.execute(txtView.getText().toString());
-
-
 
             }
         }

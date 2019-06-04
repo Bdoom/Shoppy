@@ -26,11 +26,13 @@ public class AsyncUpdateShoppingListItem extends AsyncTask<String, String, Strin
 
         db.shoppingListItemDAO().update(newName, oldName);
 
+        db.close();
+
         return "";
     }
 
     protected void onPostExecute(String string) {
-        AsyncGetShoppingList getShoppingList = new AsyncGetShoppingList(listFragment);
+        AsyncGetShoppingListForListFragment getShoppingList = new AsyncGetShoppingListForListFragment(listFragment);
         getShoppingList.execute();
     }
 }

@@ -59,6 +59,9 @@ public class TargetRequest extends AsyncTask<String, String, String> {
                 sb.append(inputLine);
             }
 
+            in.close();
+            br.close();
+
             ParseXML(sb);
 
         } catch (IOException ex)
@@ -104,6 +107,9 @@ public class TargetRequest extends AsyncTask<String, String, String> {
                 stringBuilder.append(inputLine);
             }
 
+            in.close();
+            br.close();
+
         } catch (IOException ex)
         {
             ex.printStackTrace();
@@ -122,6 +128,11 @@ public class TargetRequest extends AsyncTask<String, String, String> {
 
             JSONObject search_response = jsonObject.getJSONObject("search_response");
             JSONObject items = search_response.getJSONObject("items");
+            if (items == null)
+            {
+                return;
+            }
+
             JSONArray item = items.getJSONArray("Item");
 
             for (int i = 0; i < item.length(); i++)

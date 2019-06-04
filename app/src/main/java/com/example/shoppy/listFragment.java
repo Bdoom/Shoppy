@@ -100,7 +100,7 @@ public class listFragment extends Fragment {
         listData = new ArrayList<String>();
 
         // start async task
-        AsyncGetShoppingList asyncGetShoppingList = new AsyncGetShoppingList(this);
+        AsyncGetShoppingListForListFragment asyncGetShoppingList = new AsyncGetShoppingListForListFragment(this);
         asyncGetShoppingList.execute();
 
         SetupAdapter();

@@ -54,6 +54,9 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
                 stringBuilderForLocationID.append(inputLine);
             }
 
+            in.close();
+            br.close();
+
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -93,6 +96,9 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             while ((inputLine = br.readLine()) != null) {
                 builder.append(inputLine);
             }
+
+            in.close();
+            br.close();
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -195,7 +201,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
                 }
 
             }
-
+            inputStream.close();
             conn.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,6 +224,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
         } finally {
             try {
                 is.close();
+                reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

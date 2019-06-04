@@ -8,14 +8,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AsyncGetShoppingList extends AsyncTask<Void, Void, ArrayList> {
+public class AsyncGetShoppingListForListFragment extends AsyncTask<Void, Void, ArrayList> {
 
 
     private WeakReference<listFragment> listFragment;
     private ArrayList<String> itemList = new ArrayList<>();
 
 
-    public AsyncGetShoppingList(listFragment listFragment)
+    public AsyncGetShoppingListForListFragment(listFragment listFragment)
     {
         this.listFragment = new WeakReference<>(listFragment);
     }
@@ -37,6 +37,8 @@ public class AsyncGetShoppingList extends AsyncTask<Void, Void, ArrayList> {
         {
             itemList.add(listItem.itemName);
         }
+
+        db.close();
 
         return itemList;
     }

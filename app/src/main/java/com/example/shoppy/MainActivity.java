@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
     public HashMap<String, Double> WalmartRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WegmansRequestHashMap = new HashMap<>();
 
+    public ArrayList<String> listData;
+
     private int NumberOfRequests = 3; // For now, just three, target, walmart, and wegmans.
 
     public void RequestFinished() {
@@ -212,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         WegmansRequestHashMap.clear();
         WalmartRequestHashMap.clear();
         NumberOfRequests = 3;
-        System.out.println("Cleared HashMap, and reset number of requests.");
+        //System.out.println("Cleared HashMap, and reset number of requests.");
     }
 
     @Override
@@ -246,10 +248,6 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         }
     }
 
-    public void MakeMultipleRequest(String[] listToSearch)
-    {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

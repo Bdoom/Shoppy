@@ -25,7 +25,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
         this.activity = activity;
     }
 
-
     @Override
     protected String doInBackground(String... data) {
         String zipCode = data[0];
@@ -47,6 +46,9 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
             while ((inputLine = br.readLine()) != null) {
                 sb.append(inputLine);
             }
+
+            in.close();
+            br.close();
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -73,7 +75,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
             JSONObject resultObject = jsonObject.getJSONObject("result");
 
             JSONArray products = resultObject.getJSONArray("products");
-
 
             for (int i = 0; i < products.length(); i++) {
 

@@ -32,6 +32,8 @@ public class AsyncAddNewShoppingListItem extends AsyncTask<String, String, Strin
 
         db.shoppingListItemDAO().insertAll(shoppingListItem);
 
+        db.close();
+
         return itemName;
     }
 

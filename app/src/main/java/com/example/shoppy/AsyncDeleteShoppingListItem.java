@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import androidx.room.Room;
 import android.content.Context;
 
-import java.util.ArrayList;
-
 public class AsyncDeleteShoppingListItem extends AsyncTask<String, String, String> {
 
     private Context context;
@@ -26,11 +24,13 @@ public class AsyncDeleteShoppingListItem extends AsyncTask<String, String, Strin
 
         db.shoppingListItemDAO().delete(strings[0]);
 
+        db.close();
+
         return strings[0];
     }
 
     protected void onPostExecute(String string) {
-        AsyncGetShoppingList getShoppingList = new AsyncGetShoppingList(listFragment);
+        AsyncGetShoppingListForListFragment getShoppingList = new AsyncGetShoppingListForListFragment(listFragment);
         getShoppingList.execute();
     }
 

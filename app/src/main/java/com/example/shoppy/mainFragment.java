@@ -62,8 +62,8 @@ public class mainFragment extends Fragment {
 
             if (v.getId() == R.id.btnSearchFromList)
             {
-                String[] test = {""};
-                mainActivity.MakeMultipleRequest(test);
+                AsyncMakeMultipleRequest asyncGetShoppingListAndStartMultipleSearch = new AsyncMakeMultipleRequest(mainActivity);
+                asyncGetShoppingListAndStartMultipleSearch.execute();
             }
         }
     };
