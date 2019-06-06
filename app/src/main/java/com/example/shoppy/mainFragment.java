@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 
 public class mainFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    public ProgressBar progressBar;
 
     public mainFragment() {
         // Required empty public constructor
@@ -45,6 +48,8 @@ public class mainFragment extends Fragment {
         Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
         btnSearchFromList.setOnClickListener(mOnClickListener);
 
+        progressBar = rootView.findViewById(R.id.searchFromListProgressBar);
+
         return rootView;
     }
 
@@ -62,8 +67,8 @@ public class mainFragment extends Fragment {
 
             if (v.getId() == R.id.btnSearchFromList)
             {
-                AsyncMakeMultipleRequest asyncGetShoppingListAndStartMultipleSearch = new AsyncMakeMultipleRequest(mainActivity);
-                asyncGetShoppingListAndStartMultipleSearch.execute();
+                AsyncMakeMultipleRequest asyncMakeMultipleRequest = new AsyncMakeMultipleRequest(mainActivity);
+                asyncMakeMultipleRequest.execute();
             }
         }
     };

@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WalmartRequest extends AsyncTask<String, String, String> {
+public class WalmartRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
 
     private Activity activity;
@@ -62,6 +62,15 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
     }
 
     @Override
+    public void onCallComplete() {
+        MainActivity mainActivity = (MainActivity)activity;
+        if (mainActivity != null)
+        {
+            mainActivity.ReduceNumItemsLeftByOne();
+        }
+    }
+
+    @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
@@ -92,7 +101,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
             ex.printStackTrace();
         }
 
-        mainActivity.RequestFinished();
+        onCallComplete();
 
     }
 

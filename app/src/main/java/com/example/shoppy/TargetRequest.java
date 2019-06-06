@@ -20,7 +20,7 @@ import javax.xml.parsers.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 
-public class TargetRequest extends AsyncTask<String, String, String> {
+public class TargetRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
     String id = "";
     String query = "";
@@ -127,6 +127,13 @@ public class TargetRequest extends AsyncTask<String, String, String> {
             JSONObject jsonObject = new JSONObject(stringBuilder.toString());
 
             JSONObject search_response = jsonObject.getJSONObject("search_response");
+            if(search_response.length() < 2)
+            {
+                System.out.println("TargetRequest: search_response.length() < 2");
+                return;
+            }
+
+
             JSONObject items = search_response.getJSONObject("items");
             if (items == null)
             {
@@ -152,7 +159,7 @@ public class TargetRequest extends AsyncTask<String, String, String> {
             ex.printStackTrace();
         }
 
-        mainActivity.RequestFinished();
+        //mainActivity.RequestFinished();
 
     }
 
@@ -201,7 +208,16 @@ public class TargetRequest extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
+        onCallComplete();
     }
 
 
+    @Override
+    public void onCallComplete() {
+        MainActivity mainActivity = (MainActivity)myActivity;
+        if (mainActivity != null)
+        {
+            mainActivity.ReduceNumItemsLeftByOne();
+        }
+    }
 }

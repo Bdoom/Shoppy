@@ -25,6 +25,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.gms.ads.MobileAds;
+import android.content.Intent;
+
 
 // Add multiple stores.
 // Bed Stores:
@@ -52,6 +54,31 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
     public HashMap<String, Double> TargetRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WalmartRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WegmansRequestHashMap = new HashMap<>();
+
+    private mainFragment mainFragment;
+
+    public int NumItemsLeft = 0;
+    public void ReduceNumItemsLeftByOne()
+    {
+        NumItemsLeft--;
+        if (NumItemsLeft <= 0)
+        {
+            //StartSort();
+        }
+    }
+
+    public mainFragment GetMainFragment()
+    {
+        if (mainFragment != null)
+        {
+            return mainFragment;
+        }
+        else
+        {
+            System.out.println("Main fragment is null. Returning null.");
+            return null;
+        }
+    }
 
     public ArrayList<String> listData;
 
@@ -111,6 +138,14 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
 
     }
 
+    // Clears any data from the list so we can repopulate it.
+    public void ClearAllLists()
+    {
+        WalmartRequestHashMap.clear();
+        TargetRequestHashMap.clear();
+        WegmansRequestHashMap.clear();
+    }
+
     private boolean checkPermissions() {
 
         String[] permissions = {
@@ -136,6 +171,14 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
             return false;
         }
         return true;
+    }
+
+    public void StartSort()
+    {
+        Intent intent = new Intent(getBaseContext(), SearchResultsGridActivity.class);
+
+        //intent.putExtra("EXTRA_SESSION_ID", sessionId);
+        startActivity(intent);
     }
 
     public String GetZipCode() {
@@ -177,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
             switch (item.getItemId()) {
                 case R.id.navigation_main:
                     selectedFragment = mainFragment.newInstance();
+                    mainFragment = (mainFragment)selectedFragment;
                     break;
 
                 case R.id.navigation_list:
@@ -257,9 +301,11 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        mainFragment mainFragment = new mainFragment();
-        transaction.replace(R.id.frame_layout, mainFragment);
+        mainFragment theMainFragment = mainFragment.newInstance();
+        transaction.replace(R.id.frame_layout, theMainFragment);
         transaction.commit();
+
+        mainFragment = theMainFragment;
 
         MobileAds.initialize(this, "ca-app-pub-6636580205361410~8791143179");
 

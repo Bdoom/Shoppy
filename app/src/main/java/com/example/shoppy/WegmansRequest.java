@@ -18,7 +18,7 @@ import java.io.DataOutputStream;
 
 import java.util.HashMap;
 
-public class WegmansRequest extends AsyncTask<String, String, String> {
+public class WegmansRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
     Activity activity;
 
@@ -69,6 +69,15 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
 
 
         return "";
+    }
+
+    @Override
+    public void onCallComplete() {
+        MainActivity mainActivity = (MainActivity)activity;
+        if (mainActivity != null)
+        {
+            mainActivity.ReduceNumItemsLeftByOne();
+        }
     }
 
     private void WegItemSearch(String query)
@@ -256,7 +265,9 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
         // Create a new method of getting both the item name, and the price in a single hashmap, lined up correctly.
         // itemMap = key is the sku, it returns an item name
         // priceMap = key is the sku, it returns a price.
-        HashMap<String, Double> nameAndPriceHashMap = new HashMap<>();
+
+        MainActivity mainActivity = (MainActivity)activity;
+
         for (String sku : itemMap.keySet())
         {
             String itemName = itemMap.get(sku);
@@ -264,13 +275,13 @@ public class WegmansRequest extends AsyncTask<String, String, String> {
             if (itemPrice != null && itemName != null)
             {
                 double price = Double.parseDouble(itemPrice);
-                nameAndPriceHashMap.put(itemName, price);
+                mainActivity.WegmansRequestHashMap.put(itemName, price);
             }
         }
 
-        MainActivity mainActivity = (MainActivity)activity;
-        mainActivity.WegmansRequestHashMap = nameAndPriceHashMap;
-        mainActivity.RequestFinished();
+        onCallComplete();
+
+        //mainActivity.RequestFinished();
 
     }
 }
