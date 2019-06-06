@@ -80,64 +80,6 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         }
     }
 
-    public ArrayList<String> listData;
-
-    private int NumberOfRequests = 3; // For now, just three, target, walmart, and wegmans.
-
-    public void RequestFinished() {
-        NumberOfRequests--;
-        if (NumberOfRequests <= 0) {
-            AllRequestsFinished();
-        }
-    }
-
-    private void AllRequestsFinished() {
-        // Sort the request data.
-        //double targetMin = Collections.min(TargetRequestHashMap.values());
-        //double walmartMin = Collections.min(WalmartRequestHashMap.values());
-        //double wegmansMin = Collections.min(WegmansRequestHashMap.values());
-
-        String cheapestTargetItemName = "";
-        double cheapestTargetPrice = Double.MAX_VALUE;
-
-        String cheapestWalmartItemName = "";
-        double cheapestWalmartPrice = Double.MAX_VALUE;
-
-        String cheapestWegmansItemName = "";
-        double cheapestWegmansPrice = Double.MAX_VALUE;
-
-        for (Map.Entry<String, Double> entry : TargetRequestHashMap.entrySet()) {
-            if (entry.getValue() < cheapestTargetPrice)
-            {
-                cheapestTargetPrice = entry.getValue();
-                cheapestTargetItemName = entry.getKey();
-            }
-
-        }
-
-        for (Map.Entry<String, Double> entry : WalmartRequestHashMap.entrySet()) {
-            if (entry.getValue() < cheapestWalmartPrice)
-            {
-                cheapestWalmartPrice = entry.getValue();
-                cheapestWalmartItemName = entry.getKey();
-            }
-        }
-
-        for (Map.Entry<String, Double> entry : WegmansRequestHashMap.entrySet()) {
-            if (entry.getValue() < cheapestWegmansPrice)
-            {
-                cheapestWegmansPrice = entry.getValue();
-                cheapestWegmansItemName = entry.getKey();
-            }
-        }
-
-        System.out.println("Cheapest Target Item Name: " + cheapestTargetItemName + " Price: " + cheapestTargetPrice);
-        System.out.println("Cheapest Walmart Item Name: " + cheapestWalmartItemName + " Price: " + cheapestWalmartPrice);
-        System.out.println("Cheapest Wegmans Item Name: " + cheapestWegmansItemName + " Price: " + cheapestWegmansPrice);
-
-
-    }
-
     // Clears any data from the list so we can repopulate it.
     public void ClearAllLists()
     {
@@ -252,26 +194,17 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
                 || "google_sdk".equals(Build.PRODUCT);
     }
 
-    private void ResetSearch()
-    {
-        TargetRequestHashMap.clear();
-        WegmansRequestHashMap.clear();
-        WalmartRequestHashMap.clear();
-        NumberOfRequests = 3;
-        //System.out.println("Cleared HashMap, and reset number of requests.");
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
 
-    public void MakeRequest()
+    public void MakeSingleRequest()
     {
         EditText txtSearch = findViewById(R.id.txtSearch);
         checkPermissions();
-        ResetSearch();
+        ClearAllLists();
 
         TargetRequest targetRequest = new TargetRequest(myActivity);
         WegmansRequest wegRequest = new WegmansRequest(myActivity);

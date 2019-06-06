@@ -61,7 +61,7 @@ public class mainFragment extends Fragment {
             if (v.getId() == R.id.btnSearch) {
                 if (mainActivity != null)
                 {
-                    mainActivity.MakeRequest();
+                    mainActivity.MakeSingleRequest();
                 }
             }
 
