@@ -24,6 +24,7 @@ public class SearchResultsGridActivity extends AppCompatActivity {
     private int NumberOfColumns = 3;
     public RecyclerView.Adapter mAdapter;
     public ArrayList<String> listData = new ArrayList<>();
+    public SearchContainer searchContainer = new SearchContainer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,9 @@ public class SearchResultsGridActivity extends AppCompatActivity {
 
         mAdapter = new SearchResultsGridAdapter(getBaseContext(), listData.toArray(new String[0]));
         recyclerView.setAdapter(mAdapter);
+
+        AsyncMakeMultipleRequest asyncMakeMultipleRequest = new AsyncMakeMultipleRequest(this, searchContainer);
+        asyncMakeMultipleRequest.execute();
 
     }
 

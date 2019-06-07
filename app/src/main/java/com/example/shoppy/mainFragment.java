@@ -1,6 +1,7 @@
 package com.example.shoppy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -14,8 +15,6 @@ import android.widget.ProgressBar;
 public class mainFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
-    public ProgressBar progressBar;
 
     public mainFragment() {
         // Required empty public constructor
@@ -48,8 +47,6 @@ public class mainFragment extends Fragment {
         Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
         btnSearchFromList.setOnClickListener(mOnClickListener);
 
-        progressBar = rootView.findViewById(R.id.searchFromListProgressBar);
-
         return rootView;
     }
 
@@ -67,8 +64,8 @@ public class mainFragment extends Fragment {
 
             if (v.getId() == R.id.btnSearchFromList)
             {
-                AsyncMakeMultipleRequest asyncMakeMultipleRequest = new AsyncMakeMultipleRequest(mainActivity);
-                asyncMakeMultipleRequest.execute();
+                Intent intent = new Intent(getContext(), SearchResultsGridActivity.class);
+                startActivity(intent);
             }
         }
     };

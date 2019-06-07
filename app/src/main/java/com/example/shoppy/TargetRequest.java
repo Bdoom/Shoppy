@@ -1,6 +1,5 @@
 package com.example.shoppy;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -19,16 +18,18 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.util.Iterator;
+import java.util.HashMap;
 
 public class TargetRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
     String id = "";
     String query = "";
-    Activity myActivity;
+    SearchContainer searchContainer;
 
-    public TargetRequest(Activity myActivity)
+    public TargetRequest(SearchContainer searchContainer)
     {
-        this.myActivity = myActivity;
+        this.searchContainer = searchContainer;
     }
 
 
@@ -86,8 +87,6 @@ public class TargetRequest extends AsyncTask<String, String, String> implements 
 
     private void RequestItems()
     {
-        MainActivity mainActivity = (MainActivity)myActivity;
-
         String apiURL = "https://redsky.target.com/v2/plp/search/?count=1&offset=0&keyword=" + query.trim() + "&store_ids=" + id.trim() + "&pricing_store_id=" + id.trim() + "&key=eb2551e4accc14f38cc42d32fbc2b2ea";
 
         HttpURLConnection urlConnection = null;
@@ -148,8 +147,7 @@ public class TargetRequest extends AsyncTask<String, String, String> implements 
                 String itemName = jsonItem.getString("title");
                 JSONObject jsonPrice = jsonItem.getJSONObject("price");
                 double price = jsonPrice.getDouble("current_retail");
-
-                mainActivity.TargetRequestHashMap.put(itemName, price);
+                searchContainer.TargetRequestHashMap.put(itemName, price);
 
             }
 
@@ -214,10 +212,12 @@ public class TargetRequest extends AsyncTask<String, String, String> implements 
 
     @Override
     public void onCallComplete() {
-        MainActivity mainActivity = (MainActivity)myActivity;
-        if (mainActivity != null)
-        {
-            mainActivity.ReduceNumItemsLeftByOne();
+        System.out.println("Number of items found: " + searchContainer.TargetRequestHashMap.size());
+        Iterator it = searchContainer.TargetRequestHashMap.entrySet().iterator();
+        while (it.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry)it.next();
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
         }
     }
 }

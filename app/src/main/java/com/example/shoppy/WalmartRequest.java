@@ -18,11 +18,11 @@ import java.net.URL;
 public class WalmartRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
 
-    private Activity activity;
+    private SearchContainer searchContainer;
 
-    public WalmartRequest(Activity activity)
+    public WalmartRequest(SearchContainer searchContainer)
     {
-        this.activity = activity;
+        this.searchContainer = searchContainer;
     }
 
     @Override
@@ -63,11 +63,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> implements
 
     @Override
     public void onCallComplete() {
-        MainActivity mainActivity = (MainActivity)activity;
-        if (mainActivity != null)
-        {
-            mainActivity.ReduceNumItemsLeftByOne();
-        }
+
     }
 
     @Override
@@ -75,8 +71,6 @@ public class WalmartRequest extends AsyncTask<String, String, String> implements
         super.onPostExecute(result);
 
         String productName = "";
-
-        MainActivity mainActivity = (MainActivity)activity;
 
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -93,7 +87,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> implements
                 String currentPrice = priceObj.getString("currentPrice");
                 if (currentPrice != null && !currentPrice.isEmpty() && currentPrice != "null") {
                     double price = Double.parseDouble(currentPrice);
-                    mainActivity.WalmartRequestHashMap.put(productName, price);
+                    searchContainer.WalmartRequestHashMap.put(productName, price);
                 }
             }
 

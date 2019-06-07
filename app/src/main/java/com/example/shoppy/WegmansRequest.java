@@ -20,11 +20,11 @@ import java.util.HashMap;
 
 public class WegmansRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
-    Activity activity;
+    SearchContainer searchContainer;
 
-    public WegmansRequest(Activity activity)
+    public WegmansRequest(SearchContainer searchContainer)
     {
-        this.activity = activity;
+        this.searchContainer = searchContainer;
     }
 
 
@@ -73,11 +73,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> implements
 
     @Override
     public void onCallComplete() {
-        MainActivity mainActivity = (MainActivity)activity;
-        if (mainActivity != null)
-        {
-            mainActivity.ReduceNumItemsLeftByOne();
-        }
+
     }
 
     private void WegItemSearch(String query)
@@ -266,8 +262,6 @@ public class WegmansRequest extends AsyncTask<String, String, String> implements
         // itemMap = key is the sku, it returns an item name
         // priceMap = key is the sku, it returns a price.
 
-        MainActivity mainActivity = (MainActivity)activity;
-
         for (String sku : itemMap.keySet())
         {
             String itemName = itemMap.get(sku);
@@ -275,7 +269,7 @@ public class WegmansRequest extends AsyncTask<String, String, String> implements
             if (itemPrice != null && itemName != null)
             {
                 double price = Double.parseDouble(itemPrice);
-                mainActivity.WegmansRequestHashMap.put(itemName, price);
+                searchContainer.WegmansRequestHashMap.put(itemName, price);
             }
         }
 
