@@ -18,8 +18,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.util.Iterator;
-import java.util.HashMap;
 
 public class TargetRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
@@ -212,12 +210,6 @@ public class TargetRequest extends AsyncTask<String, String, String> implements 
 
     @Override
     public void onCallComplete() {
-        System.out.println("Number of items found: " + searchContainer.TargetRequestHashMap.size());
-        Iterator it = searchContainer.TargetRequestHashMap.entrySet().iterator();
-        while (it.hasNext()) {
-            HashMap.Entry pair = (HashMap.Entry)it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
+        searchContainer.ReduceNumItemsLeftByOne();
     }
 }

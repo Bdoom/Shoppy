@@ -3,7 +3,6 @@ package com.example.shoppy;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Insert;
-import androidx.room.Delete;
 
 import java.util.List;
 

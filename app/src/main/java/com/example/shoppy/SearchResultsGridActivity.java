@@ -1,30 +1,19 @@
 package com.example.shoppy;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 
-public class SearchResultsGridActivity extends AppCompatActivity {
+public class SearchResultsGridActivity extends AppCompatActivity implements RequestsCompleteCallback {
 
     private RecyclerView recyclerView;
     private GridLayoutManager gridLayoutManager;
     private int NumberOfColumns = 3;
     public RecyclerView.Adapter mAdapter;
     public ArrayList<String> listData = new ArrayList<>();
-    public SearchContainer searchContainer = new SearchContainer();
+    public SearchContainer searchContainer = new SearchContainer(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,4 +36,13 @@ public class SearchResultsGridActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void AllRequestsComplete() {
+        System.out.println("All requests complete!");
+        for (String s : searchContainer.WegmansRequestHashMap.keySet())
+        {
+            System.out.println("Item name; " + s);
+        }
+
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.shoppy;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -63,7 +62,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> implements
 
     @Override
     public void onCallComplete() {
-
+        searchContainer.ReduceNumItemsLeftByOne();
     }
 
     @Override

@@ -3,20 +3,7 @@ package com.example.shoppy;
 import android.app.Activity;
 import android.net.Uri;
 import androidx.appcompat.app.AppCompatActivity;
-import android.Manifest;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.location.Location;
-import android.location.Geocoder;
-import android.location.Address;
-import android.content.Context;
-import java.io.IOException;
-import java.util.Locale;
 import android.view.MenuItem;
-import android.os.Build;
 import android.widget.EditText;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -147,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
         transaction.replace(R.id.frame_layout, theMainFragment);
         transaction.commit();
 
-        searchContainer = new SearchContainer();
+        searchContainer = new SearchContainer(this);
 
         mainFragment = theMainFragment;
 
