@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class SearchResultsGridAdapter extends RecyclerView.Adapter<SearchResultsGridAdapter.SearchResultsViewHolder> {
+
+public class MultipleSearchResultsAdapter extends RecyclerView.Adapter<MultipleSearchResultsAdapter.SearchResultsViewHolder> {
 
     public static class SearchResultsViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -18,26 +19,27 @@ public class SearchResultsGridAdapter extends RecyclerView.Adapter<SearchResults
         public ImageView imgItemImage;
         public TextView txtItemName;
         public TextView txtItemPrice;
+        public TextView txtStoreName;
 
         public SearchResultsViewHolder(View v) {
             super(v);
             view = v;
-            imgItemImage = v.findViewById(R.id.imgItemImage);
             txtItemName = v.findViewById(R.id.txtItemName);
             txtItemPrice = v.findViewById(R.id.txtItemPrice);
+            txtStoreName = v.findViewById(R.id.txtStoreName);
 
         }
     }
 
-    private String[] mData;
+    private SearchContainer searchContainer;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private Context context;
 
     // data is passed into the constructor
-    public SearchResultsGridAdapter(Context context, String[] data) {
+    public MultipleSearchResultsAdapter(Context context, SearchContainer searchContainer) {
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.searchContainer = searchContainer;
         this.context = context;
     }
 
@@ -49,23 +51,40 @@ public class SearchResultsGridAdapter extends RecyclerView.Adapter<SearchResults
     }
 
     @Override
-    public void onBindViewHolder(SearchResultsGridAdapter.SearchResultsViewHolder searchResultsViewHolder, int position) {
+    public void onBindViewHolder(MultipleSearchResultsAdapter.SearchResultsViewHolder searchResultsViewHolder, int position) {
         ImageView imgItemImage = searchResultsViewHolder.imgItemImage;
         TextView txtItemName = searchResultsViewHolder.txtItemName;
         TextView txtItemPrice = searchResultsViewHolder.txtItemPrice;
+        TextView txtStoreName = searchResultsViewHolder.txtStoreName;
 
-        // setup the data for this view.
+        SearchItem searchItem = searchContainer.CombinedSearchResults.get(position);
+
+        txtItemName.setText(searchItem.itemName);
+        txtItemPrice.setText(String.format("Price: $%s", Double.toString(searchItem.itemPrice)));
+        String storeName = "";
+
+        switch (searchItem.StoreName)
+        {
+            case Store_TARGET:
+                storeName = "Target";
+                break;
+            case Store_Walmart:
+                storeName = "Walmart";
+                break;
+            case Store_Wegmans:
+                storeName = "Wegmans";
+                break;
+        }
+
+        txtStoreName.setText(String.format("Store: %s", storeName));
+
     }
 
     // total number of cells
     @Override
     public int getItemCount() {
-        return mData.length;
-    }
-
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return mData[id];
+        int size = searchContainer.CombinedSearchResults.size();
+        return size;
     }
 
     // allows clicks events to be caught

@@ -97,7 +97,7 @@ public class listFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // load "listData" from file? or cloud?
-        listData = new ArrayList<String>();
+        listData = new ArrayList<>();
 
         // start async task
         AsyncGetShoppingListForListFragment asyncGetShoppingList = new AsyncGetShoppingListForListFragment(this);

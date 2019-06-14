@@ -82,9 +82,6 @@ public class AsyncMakeMultipleRequest extends AsyncTask<Void, Void, ArrayList> {
     @Override
     protected void onPostExecute(ArrayList items) {
 
-
-        //mainActivity.StartSort();
-
     }
 
 }

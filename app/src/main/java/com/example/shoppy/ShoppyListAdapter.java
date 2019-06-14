@@ -75,7 +75,7 @@ public class ShoppyListAdapter extends RecyclerView.Adapter<ShoppyListAdapter.Sh
                 if (parent != null) {
                     final TextView txtView = parent.findViewById(R.id.shoppingListItem);
                     AlertDialog.Builder builder = new AlertDialog.Builder(listFragment.getContext());
-                    builder.setTitle(R.string.title_add_new_shopping_item);
+                    builder.setTitle(R.string.title_edit_shopping_list_item);
 
                     final EditText input = new EditText(listFragment.getContext());
                     input.setInputType(InputType.TYPE_CLASS_TEXT);

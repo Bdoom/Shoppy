@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
 
     public void StartSort()
     {
-        Intent intent = new Intent(getBaseContext(), SearchResultsGridActivity.class);
+        Intent intent = new Intent(getBaseContext(), MultipleSearchResultsActivity.class);
 
         //intent.putExtra("EXTRA_SESSION_ID", sessionId);
         startActivity(intent);

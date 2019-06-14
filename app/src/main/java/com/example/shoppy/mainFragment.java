@@ -39,8 +39,8 @@ public class mainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        Button btnSearch = rootView.findViewById(R.id.btnSearch);
-        btnSearch.setOnClickListener(mOnClickListener);
+        //Button btnSearch = rootView.findViewById(R.id.btnSearch);
+        //btnSearch.setOnClickListener(mOnClickListener);
 
         Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
         btnSearchFromList.setOnClickListener(mOnClickListener);
@@ -53,16 +53,16 @@ public class mainFragment extends Fragment {
         @Override
         public void onClick(View v) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            if (v.getId() == R.id.btnSearch) {
+            /*if (v.getId() == R.id.btnSearch) {
                 if (mainActivity != null)
                 {
                     mainActivity.MakeSingleRequest();
                 }
-            }
+            }*/
 
             if (v.getId() == R.id.btnSearchFromList)
             {
-                Intent intent = new Intent(getContext(), SearchResultsGridActivity.class);
+                Intent intent = new Intent(getContext(), MultipleSearchResultsActivity.class);
                 startActivity(intent);
             }
         }
