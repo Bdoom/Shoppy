@@ -17,6 +17,10 @@
         <activity android:name=".MultipleSearchResultsActivity"></activity>
 
         <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true"/>
+
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6636580205361410~8791143179" />
 

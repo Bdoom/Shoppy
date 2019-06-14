@@ -11,5 +11,12 @@
     <string name="btn_delete_list_item">Delete</string>
     <string name="title_edit_shopping_list_item">Edit shopping list item</string>
     <string name="store">Store: </string>
+    <string name="search">Search: </string>
+    <string name="tutorial_main_fragment_header">How to use Shoppy</string>
+    <string name="tutorial_main_fragment_body">
+        1. Tap the "List" button at the bottom on your bottom navigation bar. \n
+        2. Tap the circle plus button to add a new shopping list item. \n
+        3. Once your list has been filed, please select the button at the top of the list view to start the search.
+    </string>
 
 </resources>

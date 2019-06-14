@@ -1,14 +1,17 @@
 package com.example.shoppy;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class mainFragment extends Fragment {
 
@@ -42,8 +45,24 @@ public class mainFragment extends Fragment {
         //Button btnSearch = rootView.findViewById(R.id.btnSearch);
         //btnSearch.setOnClickListener(mOnClickListener);
 
-        Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
-        btnSearchFromList.setOnClickListener(mOnClickListener);
+
+        // Make ad request
+        AdView adView = rootView.findViewById(R.id.adView);
+
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                System.out.println("Error Code (for ads): " + errorCode);
+            }
+
+        });
+
+
+        final AdRequest.Builder adReq = new AdRequest.Builder();
+        final AdRequest adRequest = adReq.build();
+        adView.loadAd(adRequest);
+
+        // End ad request
 
         return rootView;
     }
@@ -60,11 +79,11 @@ public class mainFragment extends Fragment {
                 }
             }*/
 
-            if (v.getId() == R.id.btnSearchFromList)
+            /*if (v.getId() == R.id.btnSearchFromList)
             {
                 Intent intent = new Intent(getContext(), MultipleSearchResultsActivity.class);
                 startActivity(intent);
-            }
+            }*/
         }
     };
 

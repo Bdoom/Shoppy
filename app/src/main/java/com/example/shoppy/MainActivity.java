@@ -1,17 +1,17 @@
 package com.example.shoppy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.EditText;
 import android.os.Bundle;
+import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.gms.ads.MobileAds;
-import android.content.Intent;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 // Add multiple stores.
@@ -95,32 +95,6 @@ public class MainActivity extends AppCompatActivity implements  mainFragment.OnF
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-
-    public void MakeSingleRequest()
-    {
-        EditText txtSearch = findViewById(R.id.txtSearch);
-        Util.checkPermissions(this);
-
-        TargetRequest targetRequest = new TargetRequest(searchContainer);
-        WegmansRequest wegRequest = new WegmansRequest(searchContainer);
-        WalmartRequest walmartRequest = new WalmartRequest(searchContainer);
-
-        String query = txtSearch.getText().toString();
-
-        if (Util.isEmulator()) {
-            wegRequest.execute("20876", query);
-            walmartRequest.execute("20876", query);
-            targetRequest.execute("20876", "1", "5", query);
-
-        } else {
-            String zipCode = Util.GetZipCode(this);
-            wegRequest.execute(zipCode, query);
-            walmartRequest.execute(zipCode, query);
-            targetRequest.execute(zipCode, "1", "5", query);
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
