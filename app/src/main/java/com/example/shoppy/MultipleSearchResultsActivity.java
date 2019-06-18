@@ -1,21 +1,17 @@
 package com.example.shoppy;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.os.Bundle;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.HashMap;
 
 public class MultipleSearchResultsActivity extends AppCompatActivity implements RequestsCompleteCallback {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    private int NumberOfColumns = 3;
     public RecyclerView.Adapter mAdapter;
-    public HashMap<String, HashMap<String, Double>> data = new HashMap<String, HashMap<String, Double>>();
     public SearchContainer searchContainer = new SearchContainer(this);
 
     @Override

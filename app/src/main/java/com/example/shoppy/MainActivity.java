@@ -24,6 +24,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 // Electronics Stores:
 // Best Buy
 // Microcenter
+// Newegg?
+// Craigslist?
 // Clothing?:
 // Abercrombie & fitch
 // Hollister

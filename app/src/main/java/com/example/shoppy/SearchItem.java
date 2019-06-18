@@ -6,7 +6,8 @@ enum EStoreName
 {
     Store_TARGET,
     Store_Walmart,
-    Store_Wegmans
+    Store_Wegmans,
+    Store_Microcenter
 }
 
 public class SearchItem {

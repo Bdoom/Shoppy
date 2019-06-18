@@ -2,7 +2,8 @@
     <string name="app_name">Shoppy</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">List</string>
-    <string name="title_notifications">Graphs</string>
+    <string name="title_graphs">Graphs</string>
+    <string name="title_travel">Travel</string>
     <string name="title_best_store">Best Store: </string>
     <string name="title_price">Price: </string>
     <string name="list_item_edit_text">Edit</string>

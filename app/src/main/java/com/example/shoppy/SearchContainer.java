@@ -12,6 +12,7 @@ public class SearchContainer {
     public HashMap<String, Double> TargetRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WalmartRequestHashMap = new HashMap<>();
     public HashMap<String, Double> WegmansRequestHashMap = new HashMap<>();
+    public HashMap<String, Double> MicrocenterRequestHashMap = new HashMap<>();
 
     public ArrayList<SearchItem> CombinedSearchResults = new ArrayList<>();
 
@@ -75,6 +76,18 @@ public class SearchContainer {
             it3.remove();
         }
 
+        Iterator it4 = MicrocenterRequestHashMap.entrySet().iterator();
+        while (it4.hasNext())
+        {
+            SearchItem searchItem = new SearchItem();
+            HashMap.Entry pair = (HashMap.Entry)it4.next();
+            searchItem.itemName = pair.getKey().toString();
+            searchItem.itemPrice = Double.parseDouble(pair.getValue().toString());
+            searchItem.StoreName = EStoreName.Store_Microcenter;
+            CombinedSearchResults.add(searchItem);
+            it4.remove();
+        }
+
         SortByPrice();
     }
 
@@ -96,6 +109,7 @@ public class SearchContainer {
         TargetRequestHashMap.clear();
         WalmartRequestHashMap.clear();
         WegmansRequestHashMap.clear();
+        MicrocenterRequestHashMap.clear();
     }
 
 }

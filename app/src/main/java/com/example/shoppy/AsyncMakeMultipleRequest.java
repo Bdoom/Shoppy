@@ -1,21 +1,20 @@
 package com.example.shoppy;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.view.Gravity;
-import android.widget.Toast;
-import android.content.Context;
-
 public class AsyncMakeMultipleRequest extends AsyncTask<Void, Void, ArrayList> {
 
     private ArrayList<String> itemList = new ArrayList<>();
-    public int NumberOfWebSites = 3;
+    public int NumberOfWebSites = 4;
     private SearchContainer searchContainer;
     private Activity activity;
 
@@ -59,19 +58,20 @@ public class AsyncMakeMultipleRequest extends AsyncTask<Void, Void, ArrayList> {
             TargetRequest targetRequest = new TargetRequest(searchContainer);
             WegmansRequest wegmansRequest = new WegmansRequest(searchContainer);
             WalmartRequest walmartRequest = new WalmartRequest(searchContainer);
-
-            System.out.println("Round: " + i + " of requests has been made.");
+            MicrocenterRequest microcenterRequest = new MicrocenterRequest(searchContainer);
 
             if (Util.isEmulator()) {
                 wegmansRequest.execute("20876", query);
                 walmartRequest.execute("20876", query);
                 targetRequest.execute("20876", "1", "5", query);
+                microcenterRequest.execute(query);
 
             } else {
                 String zipCode = Util.GetZipCode(activity);
                 wegmansRequest.execute(zipCode, query);
                 walmartRequest.execute(zipCode, query);
                 targetRequest.execute(zipCode, "1", "5", query);
+                microcenterRequest.execute(query);
             }
 
         }
