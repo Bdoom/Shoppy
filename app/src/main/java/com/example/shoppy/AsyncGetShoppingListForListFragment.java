@@ -28,6 +28,12 @@ public class AsyncGetShoppingListForListFragment extends AsyncTask<Void, Void, A
             return null;
         }
 
+        if (listFragment.get().getContext() == null)
+        {
+            System.out.println("listFragment context was null.");
+            return null;
+        }
+
         ShoppyDatabase db = Room.databaseBuilder(listFragment.get().getContext(),
                 ShoppyDatabase.class, "Shoppy").build();
 

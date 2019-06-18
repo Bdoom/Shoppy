@@ -3,12 +3,15 @@ package com.example.shoppy;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class mainFragment extends Fragment {
 
@@ -39,11 +42,27 @@ public class mainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        Button btnSearch = rootView.findViewById(R.id.btnSearch);
-        btnSearch.setOnClickListener(mOnClickListener);
+        //Button btnSearch = rootView.findViewById(R.id.btnSearch);
+        //btnSearch.setOnClickListener(mOnClickListener);
 
-        Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
-        btnSearchFromList.setOnClickListener(mOnClickListener);
+
+        // Make ad request
+        AdView adView = rootView.findViewById(R.id.adView);
+
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                System.out.println("Error Code (for ads): " + errorCode);
+            }
+
+        });
+
+
+        final AdRequest.Builder adReq = new AdRequest.Builder();
+        final AdRequest adRequest = adReq.build();
+        adView.loadAd(adRequest);
+
+        // End ad request
 
         return rootView;
     }
@@ -53,18 +72,18 @@ public class mainFragment extends Fragment {
         @Override
         public void onClick(View v) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            if (v.getId() == R.id.btnSearch) {
+            /*if (v.getId() == R.id.btnSearch) {
                 if (mainActivity != null)
                 {
-                    mainActivity.MakeRequest();
+                    mainActivity.MakeSingleRequest();
                 }
-            }
+            }*/
 
-            if (v.getId() == R.id.btnSearchFromList)
+            /*if (v.getId() == R.id.btnSearchFromList)
             {
-                AsyncMakeMultipleRequest asyncGetShoppingListAndStartMultipleSearch = new AsyncMakeMultipleRequest(mainActivity);
-                asyncGetShoppingListAndStartMultipleSearch.execute();
-            }
+                Intent intent = new Intent(getContext(), MultipleSearchResultsActivity.class);
+                startActivity(intent);
+            }*/
         }
     };
 

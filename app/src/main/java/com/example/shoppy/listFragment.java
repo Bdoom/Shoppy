@@ -1,21 +1,25 @@
 package com.example.shoppy;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.fragment.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-
-import android.app.AlertDialog;
+import android.widget.Button;
 import android.widget.EditText;
-import android.text.InputType;
-import android.content.DialogInterface;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 public class listFragment extends Fragment {
@@ -81,6 +85,12 @@ public class listFragment extends Fragment {
 
 
             }
+
+            if (v.getId() == R.id.btnSearchFromList)
+            {
+                Intent intent = new Intent(getContext(), MultipleSearchResultsActivity.class);
+                startActivity(intent);
+            }
         }
     };
 
@@ -90,6 +100,9 @@ public class listFragment extends Fragment {
 
         recyclerView = rootView.findViewById(R.id.shoppingList);
 
+        Button btnSearchFromList = rootView.findViewById(R.id.btnSearchFromList);
+        btnSearchFromList.setOnClickListener(mOnClickListener);
+
         FloatingActionButton floatingActionButton = rootView.findViewById(R.id.btnAddToList);
         floatingActionButton.setOnClickListener(mOnClickListener);
 
@@ -97,7 +110,7 @@ public class listFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // load "listData" from file? or cloud?
-        listData = new ArrayList<String>();
+        listData = new ArrayList<>();
 
         // start async task
         AsyncGetShoppingListForListFragment asyncGetShoppingList = new AsyncGetShoppingListForListFragment(this);
@@ -106,7 +119,6 @@ public class listFragment extends Fragment {
         SetupAdapter();
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
 
         return rootView;
     }

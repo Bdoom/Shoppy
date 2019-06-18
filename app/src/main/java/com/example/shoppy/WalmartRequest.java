@@ -1,6 +1,5 @@
 package com.example.shoppy;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -15,14 +14,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WalmartRequest extends AsyncTask<String, String, String> {
+public class WalmartRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
 
-    private Activity activity;
+    private SearchContainer searchContainer;
 
-    public WalmartRequest(Activity activity)
+    public WalmartRequest(SearchContainer searchContainer)
     {
-        this.activity = activity;
+        this.searchContainer = searchContainer;
     }
 
     @Override
@@ -62,12 +61,15 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
     }
 
     @Override
+    public void onCallComplete() {
+        searchContainer.ReduceNumItemsLeftByOne();
+    }
+
+    @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
         String productName = "";
-
-        MainActivity mainActivity = (MainActivity)activity;
 
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -84,7 +86,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
                 String currentPrice = priceObj.getString("currentPrice");
                 if (currentPrice != null && !currentPrice.isEmpty() && currentPrice != "null") {
                     double price = Double.parseDouble(currentPrice);
-                    mainActivity.WalmartRequestHashMap.put(productName, price);
+                    searchContainer.WalmartRequestHashMap.put(productName, price);
                 }
             }
 
@@ -92,7 +94,7 @@ public class WalmartRequest extends AsyncTask<String, String, String> {
             ex.printStackTrace();
         }
 
-        mainActivity.RequestFinished();
+        onCallComplete();
 
     }
 

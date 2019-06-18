@@ -1,6 +1,5 @@
 package com.example.shoppy;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -20,15 +19,15 @@ import javax.xml.parsers.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 
-public class TargetRequest extends AsyncTask<String, String, String> {
+public class TargetRequest extends AsyncTask<String, String, String> implements StoreRequestCallback {
 
     String id = "";
     String query = "";
-    Activity myActivity;
+    SearchContainer searchContainer;
 
-    public TargetRequest(Activity myActivity)
+    public TargetRequest(SearchContainer searchContainer)
     {
-        this.myActivity = myActivity;
+        this.searchContainer = searchContainer;
     }
 
 
@@ -86,8 +85,6 @@ public class TargetRequest extends AsyncTask<String, String, String> {
 
     private void RequestItems()
     {
-        MainActivity mainActivity = (MainActivity)myActivity;
-
         String apiURL = "https://redsky.target.com/v2/plp/search/?count=1&offset=0&keyword=" + query.trim() + "&store_ids=" + id.trim() + "&pricing_store_id=" + id.trim() + "&key=eb2551e4accc14f38cc42d32fbc2b2ea";
 
         HttpURLConnection urlConnection = null;
@@ -127,6 +124,13 @@ public class TargetRequest extends AsyncTask<String, String, String> {
             JSONObject jsonObject = new JSONObject(stringBuilder.toString());
 
             JSONObject search_response = jsonObject.getJSONObject("search_response");
+            if(search_response.length() < 2)
+            {
+                System.out.println("TargetRequest: search_response.length() < 2");
+                return;
+            }
+
+
             JSONObject items = search_response.getJSONObject("items");
             if (items == null)
             {
@@ -141,8 +145,7 @@ public class TargetRequest extends AsyncTask<String, String, String> {
                 String itemName = jsonItem.getString("title");
                 JSONObject jsonPrice = jsonItem.getJSONObject("price");
                 double price = jsonPrice.getDouble("current_retail");
-
-                mainActivity.TargetRequestHashMap.put(itemName, price);
+                searchContainer.TargetRequestHashMap.put(itemName, price);
 
             }
 
@@ -152,7 +155,7 @@ public class TargetRequest extends AsyncTask<String, String, String> {
             ex.printStackTrace();
         }
 
-        mainActivity.RequestFinished();
+        //mainActivity.RequestFinished();
 
     }
 
@@ -201,7 +204,12 @@ public class TargetRequest extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
+        onCallComplete();
     }
 
 
+    @Override
+    public void onCallComplete() {
+        searchContainer.ReduceNumItemsLeftByOne();
+    }
 }
